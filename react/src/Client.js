@@ -12,7 +12,8 @@ export class Client {
         method: "POST",
         body: text
       })
-        .then(res => resolve(res))
+        .then(res => res.json())
+        .then(body => resolve(body))
         .catch(err => reject(err));
     });
   }
@@ -20,7 +21,8 @@ export class Client {
   open(file) {
     return new Promise((resolve, reject) => {
       fetch(url + "/open?f=" + file)
-        .then(resolve(res))
+        .then(res => res.json())
+        .then(body => resolve(body))
         .catch(err => reject(err));
     });
   }
@@ -28,7 +30,8 @@ export class Client {
   ls(dir) {
     return new Promise((resolve, reject) => {
       fetch(url + "/ls?dir=" + dir)
-        .then(resolve(res))
+        .then(res => res.json())
+        .then(body => resolve(body))
         .catch(err => reject(err));
     });
   }

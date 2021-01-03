@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 func StartBackend() {
@@ -95,17 +96,22 @@ func ls(w http.ResponseWriter, r *http.Request) {
 
 	list.Dir = dir[0]
 
-	ls, err := ioutil.ReadDir(dir[0])
-	if err != nil {
+	if err := filepath.Walk(dir[0], func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if path != dir[0] {
+			list.Entries = append(list.Entries, FileEntry{
+				Name:  path,
+				IsDir: info.IsDir(),
+			})
+		}
+
+		return nil
+	}); err != nil {
 		errorResponse(w, "Could not list files: "+err.Error(), InternalErrorNonFatal, 500)
 		return
-	}
-
-	for _, f := range ls {
-		list.Entries = append(list.Entries, FileEntry{
-			Name:  f.Name(),
-			IsDir: f.IsDir(),
-		})
 	}
 
 	b, err := json.Marshal(list)
@@ -120,7 +126,9 @@ func ls(w http.ResponseWriter, r *http.Request) {
 // Opens a file and returns its contents for the editor to display
 func openFile(w http.ResponseWriter, r *http.Request) {
 	f := r.URL.Query()["f"]
-	body := &struct{ text string }{}
+	body := &struct {
+		Text string `json:"text"`
+	}{}
 
 	if len(f) == 0 {
 		errorResponse(w, "Must use f query parameter", RequestMissingQuery, 400)
@@ -133,7 +141,7 @@ func openFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body.text = string(b)
+	body.Text = string(b)
 	bodyBytes, err := json.Marshal(body)
 	if err != nil {
 		errorResponse(w, "Could not write response", InternalErrorFatal, 500)

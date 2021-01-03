@@ -27,12 +27,19 @@ html, body {
 
 .editor-tab {
     padding: 5px 30px;
+    padding-right: 10px;
     border-left: 1px solid #555555;
     border-right: 1px solid #555555;
 }
 
 .editor-tab.active {
     background-color: #4d5254;
+}
+
+.close-button {
+    display: inline-block;
+    cursor: pointer;
+    margin-left: 20px;
 }
 
 /* Finder */
@@ -44,6 +51,32 @@ html, body {
 .directory-tree-element {
     white-space: nowrap;
     padding: 5px 10px;
+    cursor: pointer;
+}
+
+.directory-tree-element.root > .gg-chevron {
+    display: none;
+}
+
+.directory-tree-element:not(.root) {
+    padding-left: 0;
+    padding-top: 0;
+    margin-left: -12px;
+    background-color: #2b2b2b;
+}
+
+.file-tree-element::selection,
+.directory-tree-element::selection {
+    background: none;
+}
+
+.finder-directory-open {
+    margin-left: 21px;
+    border-left: 1px solid #555555;
+}
+
+.finder-directory-closed {
+    display: none;
 }
 
 /* Editor */
@@ -131,6 +164,7 @@ html, body {
     border-radius: 3px;
     top: 4px;
     margin-right: 2px;
+    background-color: #F8F8F2;
 }
 
 .gg-folder::after {
@@ -144,4 +178,55 @@ html, body {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     top: -5px;
+}
+.gg-chevron {
+    box-sizing: border-box;
+    position: relative;
+    display: inline-block;
+    transform: scale(0.75);
+    width: 22px;
+    height: 22px;
+    border: 2px solid transparent;
+    border-radius: 100px;
+    transition: all 0.25s cubic-bezier(0.75, 0.75, 0.75, 0.75);
+    top: 4px;
+    left: 1px;
+}
+.gg-chevron::after {
+    content: "";
+    display: inline-block;
+    box-sizing: border-box;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+    transform: rotate(45deg);
+    left: 4px;
+    top: 2px;
+}
+.open {
+    transform: rotate(-90deg) scale(0.75);
+}
+.x-close,
+.x-close::before {
+    box-sizing: border-box;
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 2px;
+    border-radius: 3px;
+    background: #F8F8F2;
+    transition: all 0.25s linear;
+    transform: scale(0.75);
+}
+.x-close {
+    transform: scale(0.75) rotate(45deg);
+    top: -4px;
+}
+.x-close::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    transform: rotate(-90deg);
 }

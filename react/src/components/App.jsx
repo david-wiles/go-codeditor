@@ -1,20 +1,18 @@
-import * as React from "react";
+import React from "react";
 
 import {Toolbar} from "./Toolbar.jsx";
 import {Editor} from "./Editor.jsx";
-import {Client} from "../client.js";
-import {Finder} from "./Finder.jsx";
+import {Client} from "../Client.js";
+import {Finder} from "./finder/Finder.jsx";
 
 export class App extends React.Component {
   constructor(props) {
     super(props);
-
     this.client = new Client();
     this.state = {
-      files: ["one", "two", "three"], // Open files
+      files: [], // all open files
       activeIdx: 0
     };
-
     this.createEditor.bind(this);
   }
 
@@ -24,7 +22,7 @@ export class App extends React.Component {
         client={this.client}
         file={file}
         isActive={this.state.activeIdx === index}
-        key={"editor-pane-" + index}
+        key={"editor-pane-" + file.path}
       />
     );
   }
@@ -35,7 +33,10 @@ export class App extends React.Component {
 
     // Push an empty editor by default
     if (editors.length === 0) {
-      editors.push(this.createEditor(undefined, 0));
+      editors.push(this.createEditor({
+        name: "",
+        path: ""
+      }, 0));
     }
 
     return (
@@ -43,10 +44,27 @@ export class App extends React.Component {
         <Toolbar
           files={this.state.files}
           active={this.state.activeIdx}
-          tabChange={(idx) => this.setState({activeIdx: idx})}
+          onTabChange={(idx) => this.setState({activeIdx: idx})}
+          onTabClose={(idx) => {
+            this.setState((prev) => ({
+              files: prev.files.filter((file, index) => index !== idx),
+              activeIdx: prev.activeIdx - 1
+            }));
+          }}
         />
         <div className={"editor-container"}>
-          <Finder/>
+          <Finder
+            client={this.client}
+            dir={"/Users/davidwiles/go/src/go-codeditor/react/src/"}
+            onFileOpen={(f) => {
+              this.setState((prev) => ({
+                files: [...prev.files, {
+                  name: f.split("/").pop(),
+                  path: f
+                }]
+              }));
+            }}
+          />
           {
             editors
           }

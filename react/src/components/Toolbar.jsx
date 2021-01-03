@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 export class Toolbar extends React.Component {
   constructor(props) {
@@ -10,16 +10,23 @@ export class Toolbar extends React.Component {
     return (
       <div
         className={index === this.props.active ? "editor-tab active" : "editor-tab"}
-        onClick={() => this.props.tabChange(index)}
+        onClick={() => this.props.onTabChange(index)}
         key={"toolbar-tab-" + index}
       >
         {title}
+        <div
+          className={"close-button"}
+          aria-role={"button"}
+          onClick={() => this.props.onTabClose(index)}
+        >
+          <i className={"x-close"}/>
+        </div>
       </div>
     );
   }
 
   render() {
-    let tabs = this.props.files.map((f, i) => this.createTab(f, i));
+    let tabs = this.props.files.map((f, i) => this.createTab(f.name, i));
 
     // Default scratch editor
     if (tabs.length === 0) {
