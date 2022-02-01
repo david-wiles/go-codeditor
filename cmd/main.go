@@ -19,7 +19,7 @@ func main() {
 		wv := webview.New(false)
 		defer wv.Destroy()
 
-		wv.SetTitle("Wikipedia")
+		wv.SetTitle("Go codeditor")
 		wv.SetSize(1000, 680, webview.HintNone)
 		wv.Navigate("http://localhost:30301")
 		wv.Run()

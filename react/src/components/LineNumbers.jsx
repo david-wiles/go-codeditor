@@ -1,18 +1,17 @@
 import React from "react";
 
-export class LineNumbers extends React.Component {
-  render() {
-    let numbers = [];
+const LineNumbers = (props) => {
+  let numbers = Array.from(Array(props.count), (_, i) => {
+    let key = "line-number-" + i + 1;
+    return (<p className={"line-number"} key={key}>{i + 1}</p>);
+  });
 
-    for (let i = 1; i <= this.props.count; i += 1) {
-      let key = "line-number-" + i;
-      numbers.push(<p className={"line-number"} key={key}>{i}</p>)
-    }
+  return (
+    <div className={"line-numbers"}>
+      {numbers}
+    </div>
+  );
 
-    return (
-      <div className={"line-numbers"}>
-        {numbers}
-      </div>
-    );
-  }
-}
+};
+
+export default LineNumbers;

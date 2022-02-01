@@ -1,5 +1,5 @@
-import React from "react";
-import {DirectoryElement} from "./DirectoryElement.jsx";
+import React, {useEffect, useState} from "react";
+import DirectoryElement from "./DirectoryElement.jsx";
 
 const appendFileEntry = (rootTree, dir, entry) => {
   let parts = entry.name
@@ -23,45 +23,40 @@ const appendFileEntry = (rootTree, dir, entry) => {
   }
 };
 
-export class Finder extends React.Component {
-  constructor(props) {
-    super(props);
+const Finder = (props) => {
 
-    this.state = {
-      dir: "",
-      // tree will be a map formatted with each part of the path, such as...
-      // {
-      //   "<root>": {
-      //     "isDir": true,
-      //     "path": <root>,
-      //     "name": <root basename>
-      //     "subTree": {
-      //       "<subPath>": {
-      //         "isDir": true,
-      //         "path": <root>/<subPath>,
-      //         "name": <subPath>
-      //         "subTree": {
-      //           "<file>": {
-      //             "isDir": false,
-      //             "path": <root>/<subPath>/<file>,
-      //             "name": <file>
-      //           }
-      //         }
-      //       }
-      //     }
-      //   },
-      // }
-      tree: {
-        isDir: false,
-        path: "",
-        name: "",
-        subTree: {}
-      },
-    };
-  }
+  const [dir, setDir] = useState('');
+  const [tree, setTree] = useState({
+    isDir: false,
+    path: "",
+    name: "",
+    // tree will be a map formatted with each part of the path, such as...
+    // {
+    //   "<root>": {
+    //     "isDir": true,
+    //     "path": <root>,
+    //     "name": <root basename>
+    //     "subTree": {
+    //       "<subPath>": {
+    //         "isDir": true,
+    //         "path": <root>/<subPath>,
+    //         "name": <subPath>
+    //         "subTree": {
+    //           "<file>": {
+    //             "isDir": false,
+    //             "path": <root>/<subPath>/<file>,
+    //             "name": <file>
+    //           }
+    //         }
+    //       }
+    //     }
+    //   },
+    // }
+    subTree: {}
+  });
 
-  componentDidMount() {
-    this.props.client.ls(this.props.dir)
+  useEffect(() => {
+    props.client.ls(props.dir)
       .then(res => {
         let tree = {
           isDir: true,
@@ -71,28 +66,24 @@ export class Finder extends React.Component {
         };
 
         // Roll entries into arrays
-        res.entries.forEach((entry) => {
-          appendFileEntry(tree, res.dir, entry);
-        });
+        res.entries.forEach((entry) => appendFileEntry(tree, res.dir, entry));
 
-        this.setState({
-          dir: res.dir,
-          tree: tree
-        });
+        setDir(res.dir);
+        setTree(tree);
       })
       .catch(err => console.error(err));
-  }
+  }, []);
 
-  render() {
-    return (
-      <div className={"finder-container"}>
-        <DirectoryElement
-          name={this.state.dir}
-          tree={this.state.tree}
-          isRoot={true}
-          onFileOpen={this.props.onFileOpen}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div className={"finder-container"}>
+      <DirectoryElement
+        name={dir}
+        tree={tree}
+        isRoot={true}
+        onFileOpen={props.onFileOpen}
+      />
+    </div>
+  );
+};
+
+export default Finder;

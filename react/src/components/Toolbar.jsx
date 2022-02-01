@@ -1,23 +1,19 @@
 import React from "react";
 
-export class Toolbar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.createTab.bind(this);
-  }
+const Toolbar = (props) => {
 
-  createTab(title, index) {
+  const createTab = (title, index) => {
     return (
       <div
-        className={index === this.props.active ? "editor-tab active" : "editor-tab"}
-        onClick={() => this.props.onTabChange(index)}
+        className={index === props.active ? "editor-tab active" : "editor-tab"}
+        onClick={() => props.onTabChange(index)}
         key={"toolbar-tab-" + index}
       >
         {title}
         <div
           className={"close-button"}
           aria-role={"button"}
-          onClick={() => this.props.onTabClose(index)}
+          onClick={() => props.onTabClose(index)}
         >
           <i className={"x-close"}/>
         </div>
@@ -25,20 +21,20 @@ export class Toolbar extends React.Component {
     );
   }
 
-  render() {
-    let tabs = this.props.files.map((f, i) => this.createTab(f.name, i));
+  let tabs = props.files.map((f, i) => createTab(f.name, i));
 
-    // Default scratch editor
-    if (tabs.length === 0) {
-      tabs.push(this.createTab(<em>Untitled</em>, 0));
-    }
-
-    return (
-      <div className={"toolbar"}>
-        {
-          tabs
-        }
-      </div>
-    );
+  // Default scratch editor
+  if (tabs.length === 0) {
+    tabs.push(createTab(<em>Untitled</em>, 0));
   }
-}
+
+  return (
+    <div className={"toolbar"}>
+      {
+        tabs
+      }
+    </div>
+  );
+};
+
+export default Toolbar;

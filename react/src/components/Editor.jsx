@@ -1,95 +1,82 @@
-import * as React from "react";
+import React, {useEffect, useRef, useState} from "react";
 
 import ReactQuill from "react-quill";
 import {configure, HotKeys} from "react-hotkeys";
-import {LineNumbers} from "./LineNumbers.jsx";
-
-import hljs from 'highlight.js';
+import LineNumbers from "./LineNumbers.jsx";
 
 const keyMap = {
   save: ["ctrl+s", "command+s"]
 };
 
-export class Editor extends React.Component {
-  constructor(props) {
-    super(props);
+const Editor = (props) => {
+  const isInitialMount = useRef(true);
 
-    configure({
-      ignoreEventsCondition: () => false // No events should be ignored
-    });
-    this.state = {
-      originalText: "",
-      markupText: "",
-      lineCount: 1
-    };
-    this.rqRef = null;
-    this.handlers = {
-      save: (e) => {
-        e.preventDefault();
-        this.props.client.save(this.props.file.path, this.rqRef.getEditor().getText())
-          .then(r => console.log(r))
-          .catch(e => console.log(e));
-      }
+  configure({
+    ignoreEventsCondition: () => false // No events should be ignored
+  });
+
+  const [originalText, setOriginalText] = useState('');
+  const [markupText, setMarkupText] = useState('');
+  const [lineCount, setLineCount] = useState(1);
+
+  let rqRef = null;
+  let handlers = {
+    save: (e) => {
+      e.preventDefault();
+      props.client.save(props.file.path, rqRef.getEditor().getText())
+        .then(r => console.log(r))
+        .catch(e => console.log(e));
     }
-    this.observer = new MutationObserver((list, ob) => {
-      let editorChildren = this.rqRef.getEditingArea().children[0].children;
+  };
 
-      // for (let item of editorChildren) {
-      //   console.log(hljs.highlight("JavaScript", item.innerHTML, true));
-      // }
-      this.setState({lineCount: editorChildren.length});
-    });
+  let observer = new MutationObserver((list, ob) => {
+    let editorChildren = rqRef.getEditingArea().children[0].children;
 
-    this.loadText.bind(this);
-    this.clearEditor.bind(this);
-  }
+    // for (let item of editorChildren) {
+    //   console.log(hljs.highlight("JavaScript", item.innerHTML, true));
+    // }
+    setLineCount(editorChildren.length);
+  });
 
-  loadText() {
-    // Load text
-    if (this.props.file?.path !== "") {
-      this.props.client.open(this.props.file.path)
+  const loadText = (path) => {
+    if (path !== "") {
+      props.client.open(path)
         .then((text) => {
-          this.rqRef.getEditor().setText(text.text);
-          this.setState({originalText: text.text})
+          rqRef.getEditor().setText(text.text);
+          setOriginalText(text.text);
         })
         .catch(err => console.error(err));
     }
+  };
+
+  const clearEditor = () => {
+    rqRef.getEditor().setText("");
+    setOriginalText('');
   }
 
-  clearEditor() {
-    this.rqRef.getEditor().setText("");
-    this.setState({
-      originalText: ""
-    });
-  }
-
-  componentDidMount() {
-    this.loadText();
-    // Observe line changes
-    this.observer.observe(this.rqRef.getEditingArea().children[0], {subtree: true, childList: true});
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    // Load text if the previous file path doesn't match the current one
-    if (prevProps.file === undefined || prevProps.file.path !== this.props.file.path) {
-      this.loadText();
+  useEffect(() => {
+    loadText(props.file?.path);
+    if (isInitialMount) {
+      observer.observe(rqRef.getEditingArea().children[0], {subtree: true, childList: true});
     }
-  }
+  }, [props.file?.path]);
 
-  render() {
-    return (
-      <HotKeys
-        keyMap={keyMap}
-        handlers={this.handlers}
-        className={this.props.isActive ? "editor-pane active" : "editor-pane"}>
-        <LineNumbers count={this.state.lineCount}/>
-        <ReactQuill
-          theme={null}
-          id={"editor"}
-          className={"quill-container"}
-          ref={(el) => this.rqRef = el}
-        />
-      </HotKeys>
-    );
-  }
-}
+  return (
+    <HotKeys
+      keyMap={keyMap}
+      handlers={handlers}
+      className={props.isActive ? "editor-pane active" : "editor-pane"}>
+      <LineNumbers count={lineCount}/>
+      <ReactQuill
+        theme={null}
+        id={"editor-" + props.file.path}
+        className={"quill-container"}
+        ref={(el) => {
+          if (!rqRef) rqRef = el;
+        }}
+      />
+    </HotKeys>
+  );
+};
+
+export default Editor;

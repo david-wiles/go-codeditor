@@ -1,7 +1,7 @@
 // DEBUG make configurable
 const url = "http://localhost:30301";
 
-export class Client {
+export default class Client {
   constructor() {
     // store credentials
   }
