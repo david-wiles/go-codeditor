@@ -3,6 +3,7 @@ package internal
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -16,7 +17,10 @@ func StartBackend() {
 	mux.HandleFunc("/ls", EnforceMethod("GET", ls))
 	mux.HandleFunc("/open", EnforceMethod("GET", openFile))
 
-	err := http.ListenAndServe(":30301", mux)
+	err := http.ListenAndServe(":30301", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Println(r.Method, r.URL.String())
+		mux.ServeHTTP(w, r)
+	}))
 	if err != nil {
 		panic(err)
 	}
@@ -34,6 +38,8 @@ func errorResponse(w http.ResponseWriter, message string, reason ErrorReason, st
 		http.Error(w, message, status)
 		return
 	}
+
+	log.Println("ERR:", message)
 
 	w.WriteHeader(status)
 	_, _ = w.Write(b)
@@ -75,13 +81,26 @@ type FileList struct {
 func ls(w http.ResponseWriter, r *http.Request) {
 	list := &FileList{}
 	dir := r.URL.Query()["dir"]
+	recurse := r.URL.Query()["recurse"]
 
 	if len(dir) == 0 {
 		errorResponse(w, "Must use dir query", RequestMissingQuery, 400)
 		return
 	}
 
-	stat, err := os.Stat(dir[0])
+	var err error
+	dirString := dir[0]
+
+	// Default directory will be user's home dir
+	if dirString == "~" {
+		dirString, err = os.UserHomeDir()
+		if err != nil {
+			errorResponse(w, err.Error(), InternalErrorFatal, 500)
+			return
+		}
+	}
+
+	stat, err := os.Stat(dirString)
 	if err != nil {
 		if os.IsNotExist(err) {
 			errorResponse(w, "Directory does not exist", InternalErrorNonFatal, 404)
@@ -94,24 +113,43 @@ func ls(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	list.Dir = dir[0]
+	list.Dir = dirString
+	if len(recurse) > 0 {
+		if err := filepath.WalkDir(dirString, func(path string, info os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
 
-	if err := filepath.Walk(dir[0], func(path string, info os.FileInfo, err error) error {
+			if path != dirString {
+				list.Entries = append(list.Entries, FileEntry{
+					Name:  path,
+					IsDir: info.IsDir(),
+				})
+			}
+
+			return nil
+		}); err != nil {
+			errorResponse(w, "Could not list files: "+err.Error(), InternalErrorNonFatal, 500)
+			return
+		}
+	} else {
+		fileinfo, err := ioutil.ReadDir(dirString)
 		if err != nil {
-			return err
+			errorResponse(w, err.Error(), InternalErrorFatal, 500)
+			return
 		}
 
-		if path != dir[0] {
+		for _, f := range fileinfo {
 			list.Entries = append(list.Entries, FileEntry{
-				Name:  path,
-				IsDir: info.IsDir(),
+				Name:  filepath.Join(dirString, f.Name()),
+				IsDir: f.IsDir(),
 			})
 		}
+	}
 
-		return nil
-	}); err != nil {
-		errorResponse(w, "Could not list files: "+err.Error(), InternalErrorNonFatal, 500)
-		return
+	// Ensure list.Dir ends with a /
+	if list.Dir[len(list.Dir)-1] != '/' {
+		list.Dir = list.Dir + "/"
 	}
 
 	b, err := json.Marshal(list)

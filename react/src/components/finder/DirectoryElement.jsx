@@ -11,16 +11,18 @@ const DirectoryElement = (props) => {
     if (elem.isDir) {
       return (
         <DirectoryElement
-          key={"finder-element-" + elem.path}
+          key={props.finderName + "-finder-element-" + elem.path}
           name={elem.name}
+          finderName={props.finderName}
           tree={elem}
           onFileOpen={props.onFileOpen}
+          onDirectorySelect={props.onDirectorySelect}
         />
       );
     } else {
       return (
         <FileElement
-          key={"finder-element-" + elem.path}
+          key={props.finderName + "-finder-element-" + elem.path}
           path={elem.path}
           name={elem.name}
           onFileOpen={props.onFileOpen}
@@ -31,10 +33,15 @@ const DirectoryElement = (props) => {
 
   let subTree = props.tree.subTree;
   return (
-    <div key={"finder-list-element-" + props.tree.path}>
+    <div>
       <div
         className={props.isRoot ? [styles.directoryTreeElement, styles.root].join(' ') : styles.directoryTreeElement}
-        onDoubleClick={() => setIsCollapsed(!isCollapsed)}
+        onClick={() => {
+          setIsCollapsed(!isCollapsed);
+          // Get the files in the next directory if we haven't already
+
+        }}
+        onDoubleClick={() => props.onDirectorySelect(props.tree.path)}
       >
         <i className={isCollapsed ? [styles.ggChevron, styles.open].join(' ') : styles.ggChevron}/>
         <i className={styles.ggFolder}/>

@@ -1,10 +1,11 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState, useContext} from "react";
 
 import styles from "./custom.module.scss";
 
 import ReactQuill from "react-quill";
 import {configure, HotKeys} from "react-hotkeys";
 import LineNumbers from "./LineNumbers.jsx";
+import {Context} from "../hooks/context";
 
 const keyMap = {
   save: ["ctrl+s", "command+s"]
@@ -17,6 +18,7 @@ const Editor = (props) => {
     ignoreEventsCondition: () => false // No events should be ignored
   });
 
+  const [state, dispatch] = useContext(Context);
   const [originalText, setOriginalText] = useState('');
   const [markupText, setMarkupText] = useState('');
   const [lineCount, setLineCount] = useState(1);
@@ -25,7 +27,7 @@ const Editor = (props) => {
   let handlers = {
     save: (e) => {
       e.preventDefault();
-      props.client.save(props.file.path, rqRef.getEditor().getText())
+      state.client.save(props.file.path, rqRef.getEditor().getText())
         .then(r => console.log(r))
         .catch(e => console.log(e));
     }
@@ -42,7 +44,7 @@ const Editor = (props) => {
 
   const loadText = (path) => {
     if (path !== "") {
-      props.client.open(path)
+      state.client.open(path)
         .then((text) => {
           rqRef.getEditor().setText(text.text);
           setOriginalText(text.text);

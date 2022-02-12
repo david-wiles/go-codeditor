@@ -2,6 +2,8 @@ import React from "react";
 
 import styles from "./custom.module.scss";
 
+import MenuBar from './menu/MenuBar.jsx';
+
 const Toolbar = (props) => {
 
   const createTab = (title, index) => {
@@ -32,6 +34,7 @@ const Toolbar = (props) => {
 
   return (
     <div className={styles.toolbar}>
+      <MenuBar/>
       {
         tabs
       }

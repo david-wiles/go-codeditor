@@ -27,9 +27,9 @@ export default class Client {
     });
   }
 
-  ls(dir) {
+  ls(dir, recurse) {
     return new Promise((resolve, reject) => {
-      fetch(url + "/ls?dir=" + dir)
+      fetch(url + "/ls?dir=" + dir + (recurse ? '&recurse=true' : ''))
         .then(res => res.json())
         .then(body => resolve(body))
         .catch(err => reject(err));

@@ -17,6 +17,13 @@
     border-bottom: 1px solid #555555;
 }
 
+.modalDialog {
+    position: fixed;
+    top: 50px;
+    margin: auto;
+    background-color: hotpink;
+}
+
 .editorTab {
     padding: 5px 30px;
     padding-right: 10px;
@@ -117,6 +124,10 @@
     overflow: hidden;
     margin-right: 7px;
     margin-left: 4px;
+}
+
+.hidden {
+    display: none;
 }
 
 .ggFile::after {
