@@ -1,13 +1,15 @@
 import React from "react";
 
+import styles from "./custom.module.scss";
+
 const LineNumbers = (props) => {
   let numbers = Array.from(Array(props.count), (_, i) => {
     let key = "line-number-" + i + 1;
-    return (<p className={"line-number"} key={key}>{i + 1}</p>);
+    return (<p className={styles.lineNumber} key={key}>{i + 1}</p>);
   });
 
   return (
-    <div className={"line-numbers"}>
+    <div className={styles.lineNumbers}>
       {numbers}
     </div>
   );

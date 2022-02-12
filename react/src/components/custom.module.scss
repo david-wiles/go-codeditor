@@ -1,16 +1,8 @@
-/* App */
-html, body {
-    padding: 0;
-    margin: 0;
-    color: #F8F8F2;
-    background-color: #2b2b2b;
-}
-
-.app-container {
+.appContainer {
     min-height: 100vh;
 }
 
-.editor-container {
+.editorContainer {
     display: flex;
     flex-direction: row;
     min-height: calc(100vh - 21px); /* Full height minus toolbar height */
@@ -25,72 +17,72 @@ html, body {
     border-bottom: 1px solid #555555;
 }
 
-.editor-tab {
+.editorTab {
     padding: 5px 30px;
     padding-right: 10px;
     border-left: 1px solid #555555;
     border-right: 1px solid #555555;
 }
 
-.editor-tab.active {
+.editorTab.active {
     background-color: #4d5254;
 }
 
-.close-button {
+.closeButton {
     display: inline-block;
     cursor: pointer;
     margin-left: 20px;
 }
 
 /* Finder */
-.finder-container {
+.finderContainer {
     min-width: 400px;
 }
 
-.file-tree-element,
-.directory-tree-element {
+.fileTreeElement,
+.directoryTreeElement {
     white-space: nowrap;
     padding: 5px 10px;
     cursor: pointer;
 }
 
-.directory-tree-element.root > .gg-chevron {
+.directoryTreeElement.root > .ggChevron {
     display: none;
 }
 
-.directory-tree-element:not(.root) {
+.directoryTreeElement:not(.root) {
     padding-left: 0;
     padding-top: 0;
     margin-left: -12px;
     background-color: #2b2b2b;
 }
 
-.file-tree-element::selection,
-.directory-tree-element::selection {
+.fileTreeElement::selection,
+.directoryTreeElement::selection {
     background: none;
 }
 
-.finder-directory-open {
+.finderDirectoryOpen {
     margin-left: 21px;
     border-left: 1px solid #555555;
 }
 
-.finder-directory-closed {
+.finderDirectoryClosed {
     display: none;
 }
 
 /* Editor */
-.editor-pane {
+.editorPane {
     display: none;
 }
 
-.editor-pane.active {
+.editorPane.active {
     display: flex;
     flex-direction: row;
     width: 100%;
 }
 
-.line-numbers {
+.lineNumbers {
     line-height: 1.42;
     font-family: monospace;
     width: 70px;
@@ -98,27 +90,18 @@ html, body {
     padding-left: 5px;
 }
 
-.line-number {
+.lineNumber {
     padding: 0;
     margin: 0;
 }
 
-.quill-container {
+.quillContainer {
     width: 100%;
     border-left: 1px solid #555555;
 }
 
-.ql-container {
-    font-family: monospace;
-    caret-color: white;
-}
-
-.ql-editor {
-    padding: 0 15px;
-}
-
 /* Icons */
-.gg-file {
+.ggFile {
     box-sizing: border-box;
     position: relative;
     display: inline-block;
@@ -136,7 +119,7 @@ html, body {
     margin-left: 4px;
 }
 
-.gg-file::after {
+.ggFile::after {
     content: "";
     display: block;
     box-sizing: border-box;
@@ -149,12 +132,12 @@ html, body {
     top: -1px;
 }
 
-.gg-folder {
+.ggFolder {
     transform: scale(0.75)
 }
 
-.gg-folder,
-.gg-folder::after {
+.ggFolder,
+.ggFolder::after {
     box-sizing: border-box;
     position: relative;
     display: inline-block;
@@ -167,7 +150,7 @@ html, body {
     background-color: #F8F8F2;
 }
 
-.gg-folder::after {
+.ggFolder::after {
     content: "";
     position: absolute;
     width: 10px;
@@ -179,7 +162,7 @@ html, body {
     border-bottom-right-radius: 0;
     top: -5px;
 }
-.gg-chevron {
+.ggChevron {
     box-sizing: border-box;
     position: relative;
     display: inline-block;
@@ -192,7 +175,7 @@ html, body {
     top: 4px;
     left: 1px;
 }
-.gg-chevron::after {
+.ggChevron::after {
     content: "";
     display: inline-block;
     box-sizing: border-box;
@@ -208,8 +191,8 @@ html, body {
 .open {
     transform: rotate(-90deg) scale(0.75);
 }
-.x-close,
-.x-close::before {
+.xClose,
+.xClose::before {
     box-sizing: border-box;
     position: relative;
     display: inline-block;
@@ -220,11 +203,11 @@ html, body {
     transition: all 0.25s linear;
     transform: scale(0.75);
 }
-.x-close {
+.xClose {
     transform: scale(0.75) rotate(45deg);
     top: -4px;
 }
-.x-close::before {
+.xClose::before {
     content: "";
     position: absolute;
     top: 0;

@@ -1,5 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 
+import styles from "./custom.module.scss";
+
 import ReactQuill from "react-quill";
 import {configure, HotKeys} from "react-hotkeys";
 import LineNumbers from "./LineNumbers.jsx";
@@ -65,12 +67,12 @@ const Editor = (props) => {
     <HotKeys
       keyMap={keyMap}
       handlers={handlers}
-      className={props.isActive ? "editor-pane active" : "editor-pane"}>
+      className={props.isActive ? [styles.editorPane, styles.active].join(' ') : styles.editorPane}>
       <LineNumbers count={lineCount}/>
       <ReactQuill
         theme={null}
         id={"editor-" + props.file.path}
-        className={"quill-container"}
+        className={styles.quillContainer}
         ref={(el) => {
           if (!rqRef) rqRef = el;
         }}

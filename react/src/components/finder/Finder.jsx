@@ -1,4 +1,7 @@
 import React, {useEffect, useState} from "react";
+
+import styles from "../custom.module.scss";
+
 import DirectoryElement from "./DirectoryElement.jsx";
 
 const appendFileEntry = (rootTree, dir, entry) => {
@@ -75,7 +78,7 @@ const Finder = (props) => {
   }, []);
 
   return (
-    <div className={"finder-container"}>
+    <div className={styles.finderContainer}>
       <DirectoryElement
         name={dir}
         tree={tree}

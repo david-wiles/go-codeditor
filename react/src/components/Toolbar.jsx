@@ -1,17 +1,19 @@
 import React from "react";
 
+import styles from "./custom.module.scss";
+
 const Toolbar = (props) => {
 
   const createTab = (title, index) => {
     return (
       <div
-        className={index === props.active ? "editor-tab active" : "editor-tab"}
+        className={index === props.active ? [styles.editorTab, styles.active].join(' ') : styles.editorTab}
         onClick={() => props.onTabChange(index)}
         key={"toolbar-tab-" + index}
       >
         {title}
         <div
-          className={"close-button"}
+          className={styles.closeButton}
           aria-role={"button"}
           onClick={() => props.onTabClose(index)}
         >
@@ -29,7 +31,7 @@ const Toolbar = (props) => {
   }
 
   return (
-    <div className={"toolbar"}>
+    <div className={styles.toolbar}>
       {
         tabs
       }

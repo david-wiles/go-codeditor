@@ -1,12 +1,14 @@
 import React from "react";
 
+import styles from "../custom.module.scss";
+
 const FileElement = (props) => {
   return (
     <div
-      className={"file-tree-element"}
+      className={styles.fileTreeElement}
       onDoubleClick={() => props.onFileOpen(props.path)}
     >
-      <i className={"gg-file"}/>
+      <i className={styles.ggFile}/>
       {props.name}
     </div>
   );

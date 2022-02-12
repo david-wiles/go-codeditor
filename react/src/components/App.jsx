@@ -1,5 +1,7 @@
 import React, {useState} from "react";
 
+import styles from "./custom.module.scss";
+
 import Toolbar from "./Toolbar.jsx";
 import Editor from "./Editor.jsx";
 import Client from "../Client.js";
@@ -34,7 +36,8 @@ const App = () => {
   }
 
   return (
-    <div className={"app-container"} spellCheck={"false"}>
+    <div className={styles.appContainer}
+         spellCheck={"false"}>
       <Toolbar
         files={files}
         active={activeIdx}
@@ -44,7 +47,7 @@ const App = () => {
           setActiveIdx(activeIdx - 1);
         }}
       />
-      <div className={"editor-container"}>
+      <div className={styles.editorContainer}>
         <Finder
           client={client}
           dir={"/Users/davidwiles/go/src/go-codeditor/react/src/"}
