@@ -1,7 +1,9 @@
-import React, {useState, useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import styles from "../custom.module.scss";
+
+import ModalWrapper from './ModalWrapper';
 import Finder from "../finder/Finder";
-import {Context} from "../../hooks/context.jsx";
+import {Context} from "../../hooks/context";
 
 const OpenDirectoryAction = (props) => {
   const [state, dispatch] = useContext(Context);
@@ -9,16 +11,17 @@ const OpenDirectoryAction = (props) => {
 
   return (
     <>
-      <div className={styles.menuBarAction}
+      <span className={styles.menuBarAction}
            onClick={() => setModalOpen((prev) => !prev)}>
         Open Directory
-      </div>
-      <div className={modalOpen ? styles.modalDialog : [styles.modalDialog, styles.hidden].join(' ')}>
+      </span>
+      <ModalWrapper open={modalOpen} content={
         <Finder
           dir={state.dir.length ? state.dir : '~'}
           client={state.client}
           recurse={false}
-          onFileOpen={(f) => {}}
+          onFileOpen={(f) => {
+          }}
           name={"open-directory-modal"}
           onDirectorySelect={(dir) => {
             dispatch({
@@ -28,7 +31,7 @@ const OpenDirectoryAction = (props) => {
             setModalOpen(false);
           }}
         />
-      </div>
+      }/>
     </>
   );
 };

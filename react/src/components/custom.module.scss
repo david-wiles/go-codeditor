@@ -17,11 +17,30 @@
     border-bottom: 1px solid #555555;
 }
 
-.modalDialog {
+.modal {
     position: fixed;
-    top: 50px;
-    margin: auto;
-    background-color: hotpink;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.modalDialog {
+    position: relative;
+    width: auto;
+    margin: 40px auto;
+    max-width: 500px;
+    border: 1px solid darkgrey;
+    border-radius: 3px;
+}
+
+.modalContent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
 .editorTab {
@@ -29,10 +48,34 @@
     padding-right: 10px;
     border-left: 1px solid #555555;
     border-right: 1px solid #555555;
+
+    &.active {
+        background-color: #4d5254;
+    }
 }
 
-.editorTab.active {
-    background-color: #4d5254;
+.menubar {
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+    padding: 5px 10px;
+}
+
+.dropdownTab {
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.openMenu {
+    padding: 5px;
+    background-color: black;
+}
+
+.menuBarAction {
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .closeButton {
@@ -51,17 +94,19 @@
     white-space: nowrap;
     padding: 5px 10px;
     cursor: pointer;
-}
-
-.directoryTreeElement.root > .ggChevron {
-    display: none;
-}
-
-.directoryTreeElement:not(.root) {
-    padding-left: 0;
-    padding-top: 0;
-    margin-left: -12px;
     background-color: #2b2b2b;
+
+    &.root {
+        .ggChevron {
+            display: none;
+        }
+    }
+
+    &:not(.root) {
+        padding-left: 0;
+        padding-top: 0;
+        margin-left: -12px;
+    }
 }
 
 .fileTreeElement::selection,
@@ -81,12 +126,12 @@
 /* Editor */
 .editorPane {
     display: none;
-}
 
-.editorPane.active {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
+    &.active {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+    }
 }
 
 .lineNumbers {
@@ -107,6 +152,11 @@
     border-left: 1px solid #555555;
 }
 
+.hidden {
+    display: none;
+}
+
+
 /* Icons */
 .ggFile {
     box-sizing: border-box;
@@ -125,11 +175,6 @@
     margin-right: 7px;
     margin-left: 4px;
 }
-
-.hidden {
-    display: none;
-}
-
 .ggFile::after {
     content: "";
     display: block;
@@ -142,11 +187,9 @@
     right: -1px;
     top: -1px;
 }
-
 .ggFolder {
     transform: scale(0.75)
 }
-
 .ggFolder,
 .ggFolder::after {
     box-sizing: border-box;
@@ -160,7 +203,6 @@
     margin-right: 2px;
     background-color: #F8F8F2;
 }
-
 .ggFolder::after {
     content: "";
     position: absolute;
@@ -185,6 +227,9 @@
     transition: all 0.25s cubic-bezier(0.75, 0.75, 0.75, 0.75);
     top: 4px;
     left: 1px;
+    &.open {
+        transform: rotate(-90deg) scale(0.75);
+    }
 }
 .ggChevron::after {
     content: "";
@@ -199,9 +244,7 @@
     left: 4px;
     top: 2px;
 }
-.open {
-    transform: rotate(-90deg) scale(0.75);
-}
+
 .xClose,
 .xClose::before {
     box-sizing: border-box;

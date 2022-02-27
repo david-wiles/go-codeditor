@@ -5,7 +5,7 @@ import styles from "../custom.module.scss";
 import FileElement from "./FileElement.jsx";
 
 const DirectoryElement = (props) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const getSubtreeElement = (elem) => {
     if (elem.isDir) {

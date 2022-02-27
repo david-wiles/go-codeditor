@@ -7,7 +7,7 @@ import OpenDirectoryAction from "./OpenDirectoryAction.jsx"
 
 const MenuBar = (props) => {
   return (
-    <div className={styles.toolbar}>
+    <div className={styles.menubar}>
       <DropDown title={'File'}
                 actions={[
                   <OpenDirectoryAction key={'file-open-directory-action'}/>

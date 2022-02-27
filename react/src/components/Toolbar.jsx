@@ -16,10 +16,9 @@ const Toolbar = (props) => {
         {title}
         <div
           className={styles.closeButton}
-          aria-role={"button"}
           onClick={() => props.onTabClose(index)}
         >
-          <i className={"x-close"}/>
+          <i className={"xClose"}/>
         </div>
       </div>
     );
@@ -33,11 +32,13 @@ const Toolbar = (props) => {
   }
 
   return (
-    <div className={styles.toolbar}>
+    <div>
       <MenuBar/>
-      {
-        tabs
-      }
+      <div className={styles.toolbar}>
+        {
+          tabs
+        }
+      </div>
     </div>
   );
 };
