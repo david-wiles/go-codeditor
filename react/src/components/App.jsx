@@ -8,19 +8,15 @@ import Client from "../Client.js";
 import Finder from "./finder/Finder.jsx";
 
 import {Context} from "../hooks/context.jsx";
+import ModalWrapper from "./menu/ModalWrapper";
+import OpenDirectoryAction from "./menu/OpenDirectoryAction";
+import OpenDirectoryModal from "./menu/OpenDirectoryModal";
 
 const App = () => {
   const [state, dispatch] = useContext(Context);
   const [files, setFiles] = useState([]);
   const [activeIdx, setActiveIdx] = useState(0);
-
-  useEffect(() => {
-    // Get client's credentials and create a new client, put in context
-    dispatch({
-      type: 'SET_CLIENT',
-      payload: new Client()
-    });
-  }, []);
+  const [editors, setEditors] = useState('');
 
   const createEditor = (file, index) => {
     return (
@@ -33,14 +29,18 @@ const App = () => {
     );
   };
 
-  // Render an editor for each open file
-  let editors = files.map(createEditor);
-  if (editors.length === 0) {
-    editors.push(createEditor({
-      name: "",
-      path: ""
-    }, 0));
-  }
+  useEffect(() => {
+    // Render an editor for each open file
+    let editors = files.map(createEditor);
+    if (editors.length === 0) {
+      editors.push(createEditor({
+        name: "",
+        path: ""
+      }, 0));
+    }
+
+    setEditors(editors);
+  }, [activeIdx, files]);
 
   return (
     <div className={styles.appContainer}
@@ -56,22 +56,23 @@ const App = () => {
       />
       <div className={styles.editorContainer}>
         <Finder
-          dir={state.dir}
-          client={state.client}
           name={"main"}
           recurse={true}
+          tree={state.tree}
           onFileOpen={(f) => {
             setFiles([...files, {
               name: f.split("/").pop(),
               path: f
             }])
           }}
-          onDirectorySelect={() => {}}
         />
         {
           editors
         }
       </div>
+      {
+        state.dir === '' ? <OpenDirectoryModal open={true} dir={'~'}/> : ''
+      }
     </div>
   );
 }

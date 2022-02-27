@@ -1,8 +1,10 @@
 import React, {createContext, useReducer} from "react";
+import Client from "../Client";
+
 
 const initialState = {
   dir: '',
-  client: null
+  client: new Client(/* TODO credentials */)
 };
 
 const Reducer = (state, action) => {
@@ -17,6 +19,33 @@ const Reducer = (state, action) => {
       return {
         ...state,
         client: action.payload
+      }
+    case 'SET_TREE':
+      return {
+        ...state,
+        // tree will be a map formatted with each part of the path, such as...
+        // {
+        //   "<root>": {
+        //     "isDir": true,
+        //     "path": <root>,
+        //     "name": <root basename>
+        //     "subTree": {
+        //       "<subPath>": {
+        //         "isDir": true,
+        //         "path": <root>/<subPath>,
+        //         "name": <subPath>
+        //         "subTree": {
+        //           "<file>": {
+        //             "isDir": false,
+        //             "path": <root>/<subPath>/<file>,
+        //             "name": <file>
+        //           }
+        //         }
+        //       }
+        //     }
+        //   },
+        // }
+        tree: action.payload
       }
     default:
       return state;

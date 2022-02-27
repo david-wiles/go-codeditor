@@ -18,7 +18,7 @@ const Toolbar = (props) => {
           className={styles.closeButton}
           onClick={() => props.onTabClose(index)}
         >
-          <i className={"xClose"}/>
+          <i className={styles.xClose}/>
         </div>
       </div>
     );

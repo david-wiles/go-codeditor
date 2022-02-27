@@ -1,94 +1,25 @@
-import React, {useEffect, useState, useContext} from "react";
+import React, {useContext, useEffect, useState} from "react";
 
 import styles from "../custom.module.scss";
 
 import DirectoryElement from "./DirectoryElement.jsx";
-
-const appendFileEntry = (rootTree, dir, entry) => {
-  let nameParts = entry.name
-    .slice(dir.length)
-    .split("/");
-
-  let tree = rootTree;
-  for (let i = 0; i < nameParts.length; i += 1) {
-    if (tree.subTree[nameParts[i]]) {
-      tree = tree.subTree[nameParts[i]];
-    } else {
-      // The last part should always entry this branch because file names must be unique.
-      // However, we may enter this branch before the last part if there is only one file in the dir
-      tree.subTree[nameParts[i]] = {
-        isDir: entry.isDir,
-        name: nameParts[nameParts.length - 1],
-        path: dir + nameParts.join("/"),
-        subTree: {}
-      };
-    }
-  }
-};
+import {Context} from "../../hooks/context";
 
 const Finder = (props) => {
-
-  const [dir, setDir] = useState('');
-  const [tree, setTree] = useState({
-    isDir: false,
-    path: "",
-    name: "",
-    // tree will be a map formatted with each part of the path, such as...
-    // {
-    //   "<root>": {
-    //     "isDir": true,
-    //     "path": <root>,
-    //     "name": <root basename>
-    //     "subTree": {
-    //       "<subPath>": {
-    //         "isDir": true,
-    //         "path": <root>/<subPath>,
-    //         "name": <subPath>
-    //         "subTree": {
-    //           "<file>": {
-    //             "isDir": false,
-    //             "path": <root>/<subPath>/<file>,
-    //             "name": <file>
-    //           }
-    //         }
-    //       }
-    //     }
-    //   },
-    // }
-    subTree: {}
-  });
-
-  useEffect(() => {
-    if (props.dir !== '' && props.client) {
-      props.client.ls(props.dir, props.recurse)
-        .then(res => {
-          let tree = {
-            isDir: true,
-            path: res.dir,
-            name: res.dir.split("/").pop(),
-            subTree: {}
-          };
-
-          // Roll entries into arrays
-          res.entries.forEach((entry) => appendFileEntry(tree, res.dir, entry));
-
-          setDir(res.dir);
-          setTree(tree);
-        })
-        .catch(err => console.error(err));
-    }
-  }, [props.dir, props.client]);
-
   return (
-    <div className={styles.finderContainer}>
-      <DirectoryElement
-        name={dir}
-        finderName={props.name}
-        tree={tree}
-        isRoot={true}
-        onFileOpen={props.onFileOpen}
-        onDirectorySelect={props.onDirectorySelect}
-      />
+    <div className={[styles.finderContainer].concat(props.className).join(' ')}>
+      {
+        !!props.tree ?
+          <DirectoryElement
+            name={props.tree.path}
+            finderName={props.name}
+            tree={props.tree}
+            isRoot={true}
+            onFileOpen={props.onFileOpen}
+            onDirectorySelect={props.onDirectorySelect}
+          /> :
+          ''
+      }
     </div>
   );
 };

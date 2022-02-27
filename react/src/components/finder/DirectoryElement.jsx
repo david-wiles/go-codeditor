@@ -5,7 +5,7 @@ import styles from "../custom.module.scss";
 import FileElement from "./FileElement.jsx";
 
 const DirectoryElement = (props) => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(!props.isRoot);
 
   const getSubtreeElement = (elem) => {
     if (elem.isDir) {
@@ -49,13 +49,11 @@ const DirectoryElement = (props) => {
       </div>
       <div className={isCollapsed ? styles.finderDirectoryClosed : styles.finderDirectoryOpen}>
         {
-          Object.values(subTree).map(getSubtreeElement)
+          subTree ? Object.values(subTree).map(getSubtreeElement) : ''
         }
       </div>
     </div>
   );
-
-
 };
 
 export default DirectoryElement;

@@ -41,6 +41,35 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    background-color: #555555;
+}
+
+.directorySelector {
+    padding: 20px;
+
+    .finder {
+        overflow-y: auto;
+        max-height: 500px;
+        padding: 0 50px;
+    }
+
+    .controls {
+        padding-top: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .textInputBox {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .formButtons {
+        display: flex;
+        flex-direction: row;
+    }
 }
 
 .editorTab {
